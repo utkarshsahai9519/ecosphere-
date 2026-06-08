@@ -35,7 +35,7 @@ Features helmet protection headers, strict `zod` input payload sanitization, Exp
 
 ## 🚀 Live Demo
 The application is hosted on Google Cloud Run:
-**[Launch EcoSphere](https://ecosphere-240382199210.europe-west1.run.app)**
+**[Launch EcoSphere](https://ecosphere-613211879861.europe-west1.run.app)**
 
 ---
 

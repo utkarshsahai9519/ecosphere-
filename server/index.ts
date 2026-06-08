@@ -19,7 +19,7 @@ app.use(
         'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         'font-src': ["'self'", 'https://fonts.gstatic.com'],
         'img-src': ["'self'", 'data:', 'https://images.unsplash.com'],
-        'connect-src': ["'self'", 'ws:', 'http://localhost:*'],
+        'connect-src': ["'self'", 'ws:', 'wss:', 'https:'],
       },
     },
     crossOriginEmbedderPolicy: false, // Turn off for external assets like Google Fonts
@@ -52,7 +52,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use('/api', apiRouter);
 
 // 6. Serve static files compiled from Vite
-const distPath = path.join(__dirname, '../../dist');
+const distPath = path.join(process.cwd(), 'dist');
 app.use(express.static(distPath));
 
 // 7. Route client requests (SPA routing fallback)
