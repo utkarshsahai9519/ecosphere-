@@ -40,7 +40,10 @@ export const Calculator: React.FC<CalculatorProps> = ({
     try {
       const response = await fetch('/api/calculate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-requested-with': 'EcoSphere-App'
+        },
         body: JSON.stringify(formData),
       });
 

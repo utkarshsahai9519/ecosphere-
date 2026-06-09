@@ -3,6 +3,8 @@ import { A11yConsole } from './components/A11yConsole';
 import { Calculator } from './components/Calculator';
 import { Dashboard } from './components/Dashboard';
 import { QuestEngine } from './components/QuestEngine';
+import Methodology from './components/Methodology';
+import HistoryTracker from './components/HistoryTracker';
 
 interface CalculationData {
   breakdown: {
@@ -21,13 +23,13 @@ interface CalculationData {
 }
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'calculator' | 'dashboard' | 'quests'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'dashboard' | 'quests' | 'history' | 'methodology'>('calculator');
   const [calcResult, setCalcResult] = useState<CalculationData | null>(null);
   const [questReduction, setQuestReduction] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [securityAudit, setSecurityAudit] = useState<any>(null);
 
-  // Load preset local profile data if it exists
+  // Load profile preset configuration if it exists
   useEffect(() => {
     const cached = localStorage.getItem('ecosphere_profile');
     if (cached) {
@@ -50,7 +52,6 @@ export const App: React.FC = () => {
 
   const handleCalculationComplete = (data: CalculationData) => {
     setCalcResult(data);
-    // Cache result
     localStorage.setItem('ecosphere_profile', JSON.stringify({ calcResult: data, questReduction: 0 }));
     setQuestReduction(0);
     setActiveTab('dashboard');
@@ -59,7 +60,6 @@ export const App: React.FC = () => {
   const handleHabitChange = (reduction: number) => {
     setQuestReduction(reduction);
     if (calcResult) {
-      // Sync cached reduction
       localStorage.setItem(
         'ecosphere_profile', 
         JSON.stringify({ calcResult, questReduction: reduction })
@@ -67,7 +67,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // Find the user's highest emission category to feed custom quests
   const getHighestCategory = (): string => {
     if (!calcResult) return 'energy';
     const { transport, energy, diet, shopping } = calcResult.breakdown;
@@ -78,7 +77,6 @@ export const App: React.FC = () => {
     return 'shopping';
   };
 
-  // Pre-compiled narration text for accessibility readers
   const getNarratorText = (): string => {
     if (!calcResult) {
       return "Welcome to EcoSphere. Use the Carbon Footprint wizard to compute your emissions and unlock daily quests.";
@@ -91,44 +89,31 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#080c14] text-slate-100 font-sans">
       
-      {/* Header Navigation */}
-      <header 
-        style={{ 
-          background: 'rgba(11, 17, 30, 0.8)', 
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid var(--border-color)', 
-          padding: '16px 24px', 
-          position: 'sticky', 
-          top: 0, 
-          zIndex: 10,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '1.8rem', animation: 'float 4s infinite ease-in-out' }} aria-hidden="true">🌐</span>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: '800', margin: 0 }} className="text-gradient">
+      {/* Sidebar Navigation */}
+      <aside className="w-full md:w-64 bg-slate-900/90 border-b md:border-b-0 md:border-r border-white/10 flex flex-col shrink-0">
+        {/* Brand header */}
+        <header className="h-16 flex items-center gap-3 px-6 border-b border-white/5 bg-slate-950/20">
+          <span className="text-2xl animate-pulse" aria-hidden="true">🌍</span>
+          <span className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
             EcoSphere
-          </h1>
-        </div>
+          </span>
+        </header>
 
-        <nav aria-label="Main Navigation">
-          <ul style={{ display: 'flex', listStyle: 'none', gap: '12px' }}>
+        {/* Primary nav buttons list */}
+        <nav aria-label="Primary Side navigation" className="flex-1 p-4">
+          <ul className="space-y-1.5 list-none pl-0">
             <li>
               <button
                 onClick={() => setActiveTab('calculator')}
-                style={{
-                  background: activeTab === 'calculator' ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
-                  color: activeTab === 'calculator' ? 'var(--primary)' : 'var(--text-secondary)',
-                  padding: '8px 16px',
-                  fontWeight: '600',
-                  border: activeTab === 'calculator' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid transparent',
-                }}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
+                  activeTab === 'calculator'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
               >
-                Calculator
+                <span>➕</span> Calculator
               </button>
             </li>
             <li>
@@ -140,16 +125,15 @@ export const App: React.FC = () => {
                   }
                   setActiveTab('dashboard');
                 }}
-                style={{
-                  background: activeTab === 'dashboard' ? 'rgba(6, 182, 212, 0.15)' : 'transparent',
-                  color: activeTab === 'dashboard' ? 'var(--secondary)' : 'var(--text-secondary)',
-                  padding: '8px 16px',
-                  fontWeight: '600',
-                  border: activeTab === 'dashboard' ? '1px solid rgba(6, 182, 212, 0.3)' : '1px solid transparent',
-                  opacity: calcResult ? 1 : 0.5,
-                }}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
+                  !calcResult ? 'opacity-50 cursor-not-allowed' : ''
+                } ${
+                  activeTab === 'dashboard'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
               >
-                Dashboard
+                <span>📊</span> Dashboard
               </button>
             </li>
             <li>
@@ -161,116 +145,122 @@ export const App: React.FC = () => {
                   }
                   setActiveTab('quests');
                 }}
-                style={{
-                  background: activeTab === 'quests' ? 'rgba(234, 179, 8, 0.1)' : 'transparent',
-                  color: activeTab === 'quests' ? 'var(--accent-yellow)' : 'var(--text-secondary)',
-                  padding: '8px 16px',
-                  fontWeight: '600',
-                  border: activeTab === 'quests' ? '1px solid rgba(234, 179, 8, 0.2)' : '1px solid transparent',
-                  opacity: calcResult ? 1 : 0.5,
-                }}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
+                  !calcResult ? 'opacity-50 cursor-not-allowed' : ''
+                } ${
+                  activeTab === 'quests'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
               >
-                EcoQuests
+                <span>🏆</span> Daily Quests
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveTab('history')}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
+                  activeTab === 'history'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
+              >
+                <span>📋</span> Activity Log
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveTab('methodology')}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
+                  activeTab === 'methodology'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
+              >
+                <span>📖</span> Methodology
               </button>
             </li>
           </ul>
         </nav>
-      </header>
+      </aside>
 
-      {/* Main Content Area */}
-      <main style={{ flex: 1, maxWidth: '1200px', width: '100%', margin: '0 auto', padding: '30px 20px', display: 'flex', flexDirection: 'column', gap: '30px' }}>
-        
-        {/* Intro Hero banner */}
-        <section style={{ textAlign: 'center', margin: '10px 0 20px' }}>
-          <h2 style={{ fontSize: '2.4rem', fontWeight: '800', marginBottom: '8px' }}>
-            Empowering Your <span className="text-gradient">Green Journey</span>
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '1.05rem' }}>
-            Enter your utility & transit values, simulate environmental practice toggles, and conquer custom daily carbon quests.
-          </p>
-        </section>
+      {/* Main Body Layout */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header controls */}
+        <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-slate-950/20">
+          <div className="text-sm font-mono text-slate-400">
+            System status: <span className="text-emerald-400 font-semibold">Ready</span>
+          </div>
+          <A11yConsole narratorText={getNarratorText()} />
+        </header>
 
-        {/* Accessibility Helper panel */}
-        <A11yConsole narratorText={getNarratorText()} />
-
-        {/* Dynamic tabs render */}
-        {activeTab === 'calculator' && (
-          <div className="dashboard-grid">
-            <Calculator 
-              onCalculationComplete={handleCalculationComplete} 
-              isLoading={isLoading} 
-              setIsLoading={setIsLoading} 
-            />
-            
-            <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center' }}>
-              <h3 style={{ fontSize: '1.25rem', color: 'var(--secondary)' }}>Why Carbon Tracking Matters</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-                Carbon dioxide and greenhouse gases trap solar heat, altering global climates. EcoSphere uses real-time factors to analyze your footprint across transportation, home heating, electricity, food, and consumption.
-              </p>
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderLeft: '3px solid var(--primary)', borderRadius: '4px' }}>
-                <em style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                  "We don't need one person doing sustainability perfectly. We need millions doing it imperfectly."
-                </em>
+        {/* Content routing view container */}
+        <main id="main" className="flex-1 p-6 md:p-8 max-w-6xl w-full mx-auto space-y-8 overflow-y-auto">
+          {activeTab === 'calculator' && (
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="md:col-span-2">
+                <Calculator 
+                  onCalculationComplete={handleCalculationComplete} 
+                  isLoading={isLoading} 
+                  setIsLoading={setIsLoading} 
+                />
+              </div>
+              <div className="border border-white/10 bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-center space-y-4">
+                <h3 className="text-lg font-bold text-emerald-400">🌱 Why Track Your Footprint?</h3>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  Every decision—how you commute, what utility fuel you consume, and what you eat—has a quantified global impact. 
+                  EcoSphere makes this abstract math clear, gamifying habit conversions into actionable solutions.
+                </p>
+                <div className="bg-slate-950/40 p-4 rounded-xl border-l-4 border-emerald-500 font-serif italic text-xs text-slate-400">
+                  "Small shifts done consistently by millions make a massive structural footprint difference."
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === 'dashboard' && calcResult && (
-          <Dashboard data={calcResult} questReduction={questReduction} />
-        )}
-
-        {activeTab === 'quests' && calcResult && (
-          <div className="dashboard-grid">
-            <QuestEngine 
-              onHabitChange={handleHabitChange} 
-              highestCategory={getHighestCategory()} 
-            />
+          {activeTab === 'dashboard' && calcResult && (
             <Dashboard data={calcResult} questReduction={questReduction} />
-          </div>
-        )}
-      </main>
+          )}
 
-      {/* Footer & Security / Accessibility Status Widget */}
-      <footer 
-        style={{ 
-          background: 'var(--bg-secondary)', 
-          borderTop: '1px solid var(--border-color)', 
-          padding: '24px', 
-          marginTop: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '16px'
-        }}
-      >
-        {securityAudit && (
-          <div 
-            style={{ 
-              fontSize: '0.75rem', 
-              color: 'var(--text-muted)', 
-              background: 'rgba(255,255,255,0.02)', 
-              padding: '10px 16px', 
-              borderRadius: '8px', 
-              border: '1px solid var(--border-color)',
-              maxWidth: '800px',
-              width: '100%',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '8px'
-            }}
-          >
-            <div>🛡️ CSP: <strong style={{ color: 'var(--primary)' }}>Active Headers</strong></div>
-            <div>🔒 Input Sanitize: <strong style={{ color: 'var(--primary)' }}>Zod Filtered</strong></div>
-            <div>⚡ Rate Limiters: <strong style={{ color: 'var(--primary)' }}>Enabled</strong></div>
-            <div>🛡️ Helmet Shield: <strong style={{ color: 'var(--primary)' }}>Constructed</strong></div>
-          </div>
-        )}
+          {activeTab === 'quests' && calcResult && (
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="md:col-span-1">
+                <QuestEngine 
+                  onHabitChange={handleHabitChange} 
+                  highestCategory={getHighestCategory()} 
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Dashboard data={calcResult} questReduction={questReduction} />
+              </div>
+            </div>
+          )}
 
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          © 2026 EcoSphere. Built with clean code practices.
-        </div>
-      </footer>
+          {activeTab === 'history' && (
+            <HistoryTracker />
+          )}
+
+          {activeTab === 'methodology' && (
+            <Methodology />
+          )}
+        </main>
+
+        {/* Bottom Footer Status Bar */}
+        <footer className="border-t border-white/5 p-4 bg-slate-950/20 text-center flex flex-col items-center gap-4">
+          {securityAudit && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl w-full text-[10px] text-slate-500 font-mono bg-slate-950/40 border border-white/5 rounded-xl p-3">
+              <div>🛡️ CSP: <strong className="text-emerald-400">Strict Headers</strong></div>
+              <div>🔒 CSRF Guard: <strong className="text-emerald-400">Headers Verified</strong></div>
+              <div>⚡ Rate Limit: <strong className="text-emerald-400">100req/15m</strong></div>
+              <div>🛡️ Validation: <strong className="text-emerald-400">Zod Enforced</strong></div>
+            </div>
+          )}
+          <div className="text-xs text-slate-500">
+            © 2026 EcoSphere. Built with clean code practices.
+          </div>
+        </footer>
+      </div>
+
     </div>
   );
 };

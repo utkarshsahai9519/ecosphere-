@@ -27,8 +27,20 @@ app.use(
 );
 
 // 2. Enable CORS with restricted origin rules
+const allowedOrigins = [
+  'https://ecosphere-613211879861.europe-west1.run.app',
+  'http://localhost:5173',
+  'http://localhost:8080'
+];
 app.use(cors({
-  origin: '*', // For Cloud Run public accessibility, restrict as appropriate in production
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl) or matching origins
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Blocked by CORS policy'));
+    }
+  },
   methods: ['GET', 'POST'],
 }));
 

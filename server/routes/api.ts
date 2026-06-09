@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { calculateCarbonFootprint } from '../controllers/calculator';
 
@@ -18,11 +18,46 @@ const calculatorSchema = z.object({
 });
 
 /**
+ * Custom CSRF/Sec-Fetch Mitigation Middleware
+ * Validates request metadata to reject cross-origin requests initiating mutations.
+ */
+function verifyCsrfToken(req: Request, res: Response, next: NextFunction) {
+  // Safe requests (GET, HEAD, OPTIONS) do not require CSRF check
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+
+  // Enforce custom headers (indicates request was made programmatically, bypassing traditional form submissions)
+  const clientToken = req.headers['x-requested-with'];
+  const expectedOrigin = 'https://ecosphere-613211879861.europe-west1.run.app';
+
+  if (!clientToken || clientToken !== 'EcoSphere-App') {
+    return res.status(403).json({
+      success: false,
+      message: 'CSRF security token missing or invalid. Action rejected.',
+    });
+  }
+
+  // Validate Sec-Fetch-Site and Origin header controls if available
+  const origin = req.headers['origin'];
+  const isLocalhost = req.headers['host']?.includes('localhost') || req.headers['host']?.includes('127.0.0.1');
+
+  if (origin && origin !== expectedOrigin && !isLocalhost) {
+    return res.status(403).json({
+      success: false,
+      message: 'Unauthorized origin request detected. Action rejected.',
+    });
+  }
+
+  next();
+}
+
+/**
  * @route POST /api/calculate
  * @desc Calculate carbon footprint from validated inputs
  * @access Public
  */
-router.post('/calculate', (req: Request, res: Response) => {
+router.post('/calculate', verifyCsrfToken, (req: Request, res: Response) => {
   try {
     // Strict schema parsing - filters unknown keys and validates values
     const validatedData = calculatorSchema.parse(req.body);
@@ -59,7 +94,7 @@ router.get('/security-status', (_req: Request, res: Response) => {
       zodInputValidation: 'Strict payload validation and scrubbing',
       xssProtectionEnabled: true,
       contentSecurityPolicy: 'Active, blocking cross-domain injections',
-      csrfMitigation: 'Safe endpoints (State managed on client local storage, POST routes strict validation)',
+      csrfMitigation: 'Active (anti-CSRF headers verified for mutating requests)',
     },
   });
 });
