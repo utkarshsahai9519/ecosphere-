@@ -89,12 +89,12 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#080c14] text-slate-100 font-sans">
+    <div className="app-layout">
       
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-slate-900/90 border-b md:border-b-0 md:border-r border-white/10 flex flex-col shrink-0">
+      <aside className="sidebar">
         {/* Brand header */}
-        <header className="h-16 flex items-center gap-3 px-6 border-b border-white/5 bg-slate-950/20">
+        <header className="sidebar-header">
           <span className="text-2xl animate-pulse" aria-hidden="true">🌍</span>
           <span className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
             EcoSphere
@@ -102,16 +102,12 @@ export const App: React.FC = () => {
         </header>
 
         {/* Primary nav buttons list */}
-        <nav aria-label="Primary Side navigation" className="flex-1 p-4">
-          <ul className="space-y-1.5 list-none pl-0">
+        <nav aria-label="Primary Side navigation" className="sidebar-nav">
+          <ul className="sidebar-list">
             <li>
               <button
                 onClick={() => setActiveTab('calculator')}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
-                  activeTab === 'calculator'
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                }`}
+                className={`sidebar-button ${activeTab === 'calculator' ? 'active' : ''}`}
               >
                 <span>➕</span> Calculator
               </button>
@@ -125,13 +121,7 @@ export const App: React.FC = () => {
                   }
                   setActiveTab('dashboard');
                 }}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
-                  !calcResult ? 'opacity-50 cursor-not-allowed' : ''
-                } ${
-                  activeTab === 'dashboard'
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                }`}
+                className={`sidebar-button ${!calcResult ? 'opacity-50 cursor-not-allowed' : ''} ${activeTab === 'dashboard' ? 'active' : ''}`}
               >
                 <span>📊</span> Dashboard
               </button>
@@ -145,13 +135,7 @@ export const App: React.FC = () => {
                   }
                   setActiveTab('quests');
                 }}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
-                  !calcResult ? 'opacity-50 cursor-not-allowed' : ''
-                } ${
-                  activeTab === 'quests'
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                }`}
+                className={`sidebar-button ${!calcResult ? 'opacity-50 cursor-not-allowed' : ''} ${activeTab === 'quests' ? 'active' : ''}`}
               >
                 <span>🏆</span> Daily Quests
               </button>
@@ -159,11 +143,7 @@ export const App: React.FC = () => {
             <li>
               <button
                 onClick={() => setActiveTab('history')}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
-                  activeTab === 'history'
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                }`}
+                className={`sidebar-button ${activeTab === 'history' ? 'active' : ''}`}
               >
                 <span>📋</span> Activity Log
               </button>
@@ -171,11 +151,7 @@ export const App: React.FC = () => {
             <li>
               <button
                 onClick={() => setActiveTab('methodology')}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
-                  activeTab === 'methodology'
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                }`}
+                className={`sidebar-button ${activeTab === 'methodology' ? 'active' : ''}`}
               >
                 <span>📖</span> Methodology
               </button>
@@ -185,9 +161,9 @@ export const App: React.FC = () => {
       </aside>
 
       {/* Main Body Layout */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="main-content">
         {/* Top Header controls */}
-        <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-slate-950/20">
+        <header className="top-bar">
           <div className="text-sm font-mono text-slate-400">
             System status: <span className="text-emerald-400 font-semibold">Ready</span>
           </div>
@@ -195,24 +171,25 @@ export const App: React.FC = () => {
         </header>
 
         {/* Content routing view container */}
-        <main id="main" className="flex-1 p-6 md:p-8 max-w-6xl w-full mx-auto space-y-8 overflow-y-auto">
+        <main id="main" className="content-body">
           {activeTab === 'calculator' && (
-            <div className="grid gap-6 md:grid-cols-3">
-              <div className="md:col-span-2">
+            <div className="dashboard-grid">
+              <div className="full-width" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                 <Calculator 
                   onCalculationComplete={handleCalculationComplete} 
                   isLoading={isLoading} 
                   setIsLoading={setIsLoading} 
                 />
-              </div>
-              <div className="border border-white/10 bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-center space-y-4">
-                <h3 className="text-lg font-bold text-emerald-400">🌱 Why Track Your Footprint?</h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  Every decision—how you commute, what utility fuel you consume, and what you eat—has a quantified global impact. 
-                  EcoSphere makes this abstract math clear, gamifying habit conversions into actionable solutions.
-                </p>
-                <div className="bg-slate-950/40 p-4 rounded-xl border-l-4 border-emerald-500 font-serif italic text-xs text-slate-400">
-                  "Small shifts done consistently by millions make a massive structural footprint difference."
+                
+                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
+                  <h3 className="text-lg font-bold text-emerald-400">🌱 Why Track Your Footprint?</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Every decision—how you commute, what utility fuel you consume, and what you eat—has a quantified global impact. 
+                    EcoSphere makes this abstract math clear, gamifying habit conversions into actionable solutions.
+                  </p>
+                  <div className="bg-slate-950/40 p-4 rounded-xl border-l-4 border-emerald-500 font-serif italic text-xs text-slate-400">
+                    "Small shifts done consistently by millions make a massive structural footprint difference."
+                  </div>
                 </div>
               </div>
             </div>

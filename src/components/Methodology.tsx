@@ -14,31 +14,31 @@ export default function Methodology() {
   const energyCalculation = (sandboxEnergy * 12 * FACTORS.electricityPerKwh) / 1000;
 
   return (
-    <section className="space-y-8 animate-fadeIn" aria-labelledby="methodology-title">
-      <header className="border-b border-white/10 pb-4">
-        <h1 id="methodology-title" className="text-3xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+    <section className="animate-fadeIn" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }} aria-labelledby="methodology-title">
+      <header style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
+        <h1 id="methodology-title" className="text-gradient" style={{ fontSize: '1.8rem', fontWeight: '800' }}>
           How It Works (Methodology)
         </h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '8px' }}>
           EcoSphere uses a fully deterministic model based on public, peer-reviewed databases. 
           No numbers are fabricated; every calculation is a traceable product of consumption and emission factors.
         </p>
       </header>
 
       {/* Math sandbox card */}
-      <article className="border border-white/10 bg-slate-900/60 backdrop-blur-md rounded-2xl p-6" aria-labelledby="sandbox-title">
-        <h2 id="sandbox-title" className="text-xl font-semibold text-emerald-400 mb-4 flex items-center gap-2">
+      <article className="glass-card font-sans" aria-labelledby="sandbox-title">
+        <h2 id="sandbox-title" style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>🧮</span> Interactive Math Sandbox
         </h2>
-        <p className="text-sm text-slate-300 mb-6">
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '24px' }}>
           Adjust the sliders below to see in real-time how raw consumption translates into Metric Tons of CO2 equivalent per year ($CO_2e/yr$).
         </p>
 
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* Car miles slider */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs font-semibold text-slate-400">
-              <label htmlFor="sandbox-car-input">Weekly Driving Distance: <span className="text-teal-300">{sandboxMiles} miles</span></label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-secondary)' }}>
+              <label htmlFor="sandbox-car-input">Weekly Driving Distance: <span style={{ color: 'var(--secondary)' }}>{sandboxMiles} miles</span></label>
             </div>
             <input
               id="sandbox-car-input"
@@ -47,17 +47,16 @@ export default function Methodology() {
               max="300"
               value={sandboxMiles}
               onChange={(e) => setSandboxMiles(Number(e.target.value))}
-              className="w-full accent-emerald-500 bg-slate-800 rounded-lg appearance-none h-2 cursor-pointer"
             />
-            <div className="font-mono text-xs text-slate-400 bg-slate-950/50 p-3 rounded-lg border border-white/5 mt-1">
-              <span className="text-emerald-400">Equation</span>: ({sandboxMiles} miles/week × 52 weeks) × {FACTORS.carPerMile} kg CO2e/mile ÷ 1000 = <span className="text-teal-300 font-bold">{carCalculation.toFixed(2)} Tons CO2e/yr</span>
+            <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '4px' }}>
+              <span style={{ color: 'var(--primary)' }}>Equation</span>: ({sandboxMiles} miles/week × 52 weeks) × {FACTORS.carPerMile} kg CO2e/mile ÷ 1000 = <span style={{ color: 'var(--secondary)', fontWeight: 'bold' }}>{carCalculation.toFixed(2)} Tons CO2e/yr</span>
             </div>
           </div>
 
           {/* Electricity slider */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs font-semibold text-slate-400">
-              <label htmlFor="sandbox-energy-input">Monthly Grid Electricity: <span className="text-teal-300">{sandboxEnergy} kWh</span></label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-secondary)' }}>
+              <label htmlFor="sandbox-energy-input">Monthly Grid Electricity: <span style={{ color: 'var(--secondary)' }}>{sandboxEnergy} kWh</span></label>
             </div>
             <input
               id="sandbox-energy-input"
@@ -66,66 +65,65 @@ export default function Methodology() {
               max="1000"
               value={sandboxEnergy}
               onChange={(e) => setSandboxEnergy(Number(e.target.value))}
-              className="w-full accent-emerald-500 bg-slate-800 rounded-lg appearance-none h-2 cursor-pointer"
             />
-            <div className="font-mono text-xs text-slate-400 bg-slate-950/50 p-3 rounded-lg border border-white/5 mt-1">
-              <span className="text-emerald-400">Equation</span>: ({sandboxEnergy} kWh/month × 12 months) × {FACTORS.electricityPerKwh} kg CO2e/kWh ÷ 1000 = <span className="text-teal-300 font-bold">{energyCalculation.toFixed(2)} Tons CO2e/yr</span>
+            <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '4px' }}>
+              <span style={{ color: 'var(--primary)' }}>Equation</span>: ({sandboxEnergy} kWh/month × 12 months) × {FACTORS.electricityPerKwh} kg CO2e/kWh ÷ 1000 = <span style={{ color: 'var(--secondary)', fontWeight: 'bold' }}>{energyCalculation.toFixed(2)} Tons CO2e/yr</span>
             </div>
           </div>
         </div>
       </article>
 
       {/* Documentation Table */}
-      <article className="border border-white/10 bg-slate-900/60 backdrop-blur-md rounded-2xl p-6" aria-labelledby="factors-title">
-        <h2 id="factors-title" className="text-xl font-semibold text-emerald-400 mb-4">
+      <article className="glass-card" aria-labelledby="factors-title">
+        <h2 id="factors-title" style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--primary)', marginBottom: '20px' }}>
           📊 Documented Emission Factors
         </h2>
-        <div className="overflow-x-auto rounded-xl border border-white/10">
-          <table className="min-w-full divide-y divide-white/10 text-sm text-left">
-            <thead className="bg-slate-950/50 text-slate-400 uppercase text-xs font-semibold tracking-wider">
+        <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+          <table style={{ minWidth: '600px', width: '100%' }}>
+            <thead style={{ background: 'rgba(0,0,0,0.3)', color: 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase' }}>
               <tr>
-                <th scope="col" className="px-6 py-3">Category</th>
-                <th scope="col" className="px-6 py-3">Source Metric</th>
-                <th scope="col" className="px-6 py-3">CO2e Factor</th>
-                <th scope="col" className="px-6 py-3">Database Reference</th>
+                <th scope="col">Category</th>
+                <th scope="col">Source Metric</th>
+                <th scope="col">CO2e Factor</th>
+                <th scope="col">Database Reference</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 text-slate-300">
-              <tr>
-                <td className="px-6 py-4 font-semibold text-emerald-400">Transportation (Car)</td>
-                <td className="px-6 py-4">Per Mile Driven</td>
-                <td className="px-6 py-4 font-mono text-teal-300">{FACTORS.carPerMile} kg</td>
-                <td className="px-6 py-4 text-xs text-slate-400">US Environmental Protection Agency (EPA) 2024</td>
+            <tbody style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ fontWeight: '600', color: 'var(--primary)' }}>Transportation (Car)</td>
+                <td>Per Mile Driven</td>
+                <td style={{ fontFamily: 'monospace', color: 'var(--secondary)' }}>{FACTORS.carPerMile} kg</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>US Environmental Protection Agency (EPA) 2024</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ fontWeight: '600', color: 'var(--primary)' }}>Transportation (Transit)</td>
+                <td>Per Mile Traveled</td>
+                <td style={{ fontFamily: 'monospace', color: 'var(--secondary)' }}>{FACTORS.transitPerMile} kg</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>UK DEFRA Greenhouse Gas Conversion Database (2024)</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ fontWeight: '600', color: 'var(--primary)' }}>Flights</td>
+                <td>Per Air Travel Hour</td>
+                <td style={{ fontFamily: 'monospace', color: 'var(--secondary)' }}>{FACTORS.flightPerHour} kg</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>DEFRA National Air Travel Metrics</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ fontWeight: '600', color: 'var(--primary)' }}>Home Electricity</td>
+                <td>Per Kilowatt-Hour</td>
+                <td style={{ fontFamily: 'monospace', color: 'var(--secondary)' }}>{FACTORS.electricityPerKwh} kg</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>EPA eGRID Subregion Averages</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ fontWeight: '600', color: 'var(--primary)' }}>Home Gas</td>
+                <td>Per Therm Consumed</td>
+                <td style={{ fontFamily: 'monospace', color: 'var(--secondary)' }}>{FACTORS.gasPerTherm} kg</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>US Energy Information Administration (EIA) baseline</td>
               </tr>
               <tr>
-                <td className="px-6 py-4 font-semibold text-emerald-400">Transportation (Transit)</td>
-                <td className="px-6 py-4">Per Mile Traveled</td>
-                <td className="px-6 py-4 font-mono text-teal-300">{FACTORS.transitPerMile} kg</td>
-                <td className="px-6 py-4 text-xs text-slate-400">UK DEFRA Greenhouse Gas Conversion Database (2024)</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-semibold text-emerald-400">Flights</td>
-                <td className="px-6 py-4">Per Air Travel Hour</td>
-                <td className="px-6 py-4 font-mono text-teal-300">{FACTORS.flightPerHour} kg</td>
-                <td className="px-6 py-4 text-xs text-slate-400">DEFRA National Air Travel Metrics</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-semibold text-emerald-400">Home Electricity</td>
-                <td className="px-6 py-4">Per Kilowatt-Hour</td>
-                <td className="px-6 py-4 font-mono text-teal-300">{FACTORS.electricityPerKwh} kg</td>
-                <td className="px-6 py-4 text-xs text-slate-400">EPA eGRID Subregion Averages</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-semibold text-emerald-400">Home Gas</td>
-                <td className="px-6 py-4">Per Therm Consumed</td>
-                <td className="px-6 py-4 font-mono text-teal-300">{FACTORS.gasPerTherm} kg</td>
-                <td className="px-6 py-4 text-xs text-slate-400">US Energy Information Administration (EIA) baseline</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-semibold text-emerald-400">Shopping baseline</td>
-                <td className="px-6 py-4">Per USD Spent</td>
-                <td className="px-6 py-4 font-mono text-teal-300">{FACTORS.shoppingPerDollar} kg</td>
-                <td className="px-6 py-4 text-xs text-slate-400">Economic Input-Output LCA spend models</td>
+                <td style={{ fontWeight: '600', color: 'var(--primary)' }}>Shopping baseline</td>
+                <td>Per USD Spent</td>
+                <td style={{ fontFamily: 'monospace', color: 'var(--secondary)' }}>{FACTORS.shoppingPerDollar} kg</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Economic Input-Output LCA spend models</td>
               </tr>
             </tbody>
           </table>
