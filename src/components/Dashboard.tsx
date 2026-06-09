@@ -84,7 +84,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, questReduction }) =>
       {/* 1. Footprint Overview Gauge */}
       <article className="border border-white/10 bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 flex flex-col items-center justify-center text-center" aria-labelledby="donut-header">
         <h2 id="donut-header" className="text-slate-400 text-sm font-semibold mb-4 uppercase tracking-wider">Your Annual Footprint</h2>
-        <div style={{ position: 'relative', width: '180px', height: '180px', display: 'flex', alignItems: 'center', justify: 'center' }}>
+        <div style={{ position: 'relative', width: '180px', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="100%" height="100%" viewBox="0 0 140 140" aria-label="Visual breakdown ring chart">
             <circle cx="70" cy="70" r={donutRadius} fill="transparent" stroke="rgba(255,255,255,0.03)" strokeWidth={strokeWidth} />
             {donutSegments.map((seg) => (
